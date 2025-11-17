@@ -2,7 +2,7 @@ module github.com/brizzbuzz/opnix
 
 go 1.22.3
 
-require github.com/1password/onepassword-sdk-go v0.3.0
+require github.com/1password/onepassword-sdk-go v0.4.0-beta.1
 
 require (
 	github.com/dylibso/observe-sdk/go v0.0.0-20240819160327-2d926c5d788a // indirect

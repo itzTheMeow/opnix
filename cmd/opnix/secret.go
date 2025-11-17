@@ -17,10 +17,11 @@ import (
 const defaultTokenPath = "/etc/opnix-token"
 
 type secretCommand struct {
-	fs         *flag.FlagSet
-	configFile string
-	outputDir  string
-	tokenFile  string
+	fs                 *flag.FlagSet
+	configFile         string
+	outputDir          string
+	tokenFile          string
+	desktopIntegration string
 }
 
 func newSecretCommand() *secretCommand {
@@ -31,6 +32,7 @@ func newSecretCommand() *secretCommand {
 	sc.fs.StringVar(&sc.configFile, "config", "secrets.json", "Path to secrets configuration file")
 	sc.fs.StringVar(&sc.outputDir, "output", "secrets", "Directory to store retrieved secrets")
 	sc.fs.StringVar(&sc.tokenFile, "token-file", defaultTokenPath, "Path to file containing 1Password service account token")
+	sc.fs.StringVar(&sc.desktopIntegration, "desktop-integration", "", "Account name to use for 1Password desktop app integration. Overrides 'token-file' and uses the desktop app to authenticate.")
 
 	sc.fs.Usage = func() {
 		fmt.Fprintf(sc.fs.Output(), "Usage: opnix secret [options]\n\n")
@@ -64,7 +66,12 @@ func (s *secretCommand) Run() error {
 	log.Printf("Loaded configuration with %d secrets", len(cfg.Secrets))
 
 	// Initialize 1Password client with validation
-	client, err := onepass.NewClient(s.tokenFile)
+	var client *onepass.Client
+	if s.desktopIntegration != "" {
+		client, err = onepass.NewClientWithDesktopIntegration(s.desktopIntegration)
+	} else {
+		client, err = onepass.NewClient(s.tokenFile)
+	}
 	if err != nil {
 		// Error already has context from onepass.NewClient
 		return err

@@ -14,6 +14,10 @@ type Client struct {
 	client *onepassword.Client
 }
 
+func integrationInfo() onepassword.ClientOption {
+	return onepassword.WithIntegrationInfo("NixOS Secrets Integration", "v1.0.0")
+}
+
 // GetToken retrieves token from environment or file
 func GetToken(tokenFile string) (string, error) {
 	// First try environment variable
@@ -58,12 +62,29 @@ func NewClient(tokenFile string) (*Client, error) {
 	client, err := onepassword.NewClient(
 		context.Background(),
 		onepassword.WithServiceAccountToken(token),
-		onepassword.WithIntegrationInfo("NixOS Secrets Integration", "v1.0.0"),
+		integrationInfo(),
 	)
 	if err != nil {
 		return nil, errors.OnePasswordError(
 			"Initializing 1Password client",
 			"Failed to create 1Password SDK client - check token validity",
+			err,
+		)
+	}
+
+	return &Client{client: client}, nil
+}
+
+func NewClientWithDesktopIntegration(accountName string) (*Client, error) {
+	client, err := onepassword.NewClient(
+		context.Background(),
+		onepassword.WithDesktopAppIntegration(accountName),
+		integrationInfo(),
+	)
+	if err != nil {
+		return nil, errors.OnePasswordError(
+			"Initializing 1Password client",
+			"Failed to create 1Password SDK client - check account name and reauthorize",
 			err,
 		)
 	}
