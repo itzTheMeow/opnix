@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/brizzbuzz/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/errors"
 )
 
 // Validator provides comprehensive validation with helpful error messages

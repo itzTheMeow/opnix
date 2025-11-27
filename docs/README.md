@@ -19,13 +19,13 @@ OpNix provides seamless integration between 1Password and Nix-based systems for 
 
 ## Key Features
 
-- **Declarative Configuration**: Define secrets directly in Nix configuration
-- **Flexible Ownership**: Per-secret user/group ownership and permissions
-- **Custom Paths**: Absolute paths, path templates, and symlink support
-- **Service Integration**: Automatic systemd/launchd service restarts on secret changes
-- **Multi-Platform**: NixOS, nix-darwin, and Home Manager support
-- **Reliable Architecture**: systemd/launchd services with graceful error handling
-- **Security First**: Secure token management and file permissions
+-   **Declarative Configuration**: Define secrets directly in Nix configuration
+-   **Flexible Ownership**: Per-secret user/group ownership and permissions
+-   **Custom Paths**: Absolute paths, path templates, and symlink support
+-   **Service Integration**: Automatic systemd/launchd service restarts on secret changes
+-   **Multi-Platform**: NixOS, nix-darwin, and Home Manager support
+-   **Reliable Architecture**: systemd/launchd services with graceful error handling
+-   **Security First**: Secure token management and file permissions
 
 ## Quick Start
 
@@ -55,7 +55,7 @@ OpNix provides seamless integration between 1Password and Nix-based systems for 
 services.onepassword-secrets = {
   enable = true;
   tokenFile = "/etc/opnix-token";
-  
+
   secrets = {
     databasePassword = {
       reference = "op://Homelab/Database/password";
@@ -76,32 +76,36 @@ sudo nixos-rebuild switch --flake .
 ## Documentation Structure
 
 ### Getting Started
-- **[Getting Started Guide](./getting-started.md)** - Complete setup walkthrough for all platforms
-- **[Configuration Reference](./configuration-reference.md)** - Detailed reference for all options
-- **[Migration Guide](./migration-guide.md)** - Upgrading from OpNix V0 to V1
+
+-   **[Getting Started Guide](./getting-started.md)** - Complete setup walkthrough for all platforms
+-   **[Configuration Reference](./configuration-reference.md)** - Detailed reference for all options
+-   **[Migration Guide](./migration-guide.md)** - Upgrading from OpNix V0 to V1
 
 ### Guides
-- **[Best Practices](./best-practices.md)** - Security, performance, and operational recommendations
-- **[Troubleshooting](./troubleshooting.md)** - Common issues and debugging techniques
+
+-   **[Best Practices](./best-practices.md)** - Security, performance, and operational recommendations
+-   **[Troubleshooting](./troubleshooting.md)** - Common issues and debugging techniques
 
 ### Examples
-- **[Examples Directory](./examples/)** - Real-world configuration examples
-  - [Basic Home Manager Setup](./examples/basic-home-manager.md)
-  - [Caddy Web Server](./examples/caddy-ssl.md)
-  - [PostgreSQL Database](./examples/postgresql.md)
-  - [And many more...](./examples/README.md)
+
+-   **[Examples Directory](./examples/)** - Real-world configuration examples
+    -   [Basic Home Manager Setup](./examples/basic-home-manager.md)
+    -   [Caddy Web Server](./examples/caddy-ssl.md)
+    -   [PostgreSQL Database](./examples/postgresql.md)
+    -   [And many more...](./examples/README.md)
 
 ## Platform Support
 
-| Platform | Status | Module | Use Case |
-|----------|--------|--------|----------|
-| **NixOS** | ✅ Full Support | `nixosModules.default` | System-wide secret management |
-| **nix-darwin** | ✅ Full Support | `darwinModules.default` | macOS system secret management |
-| **Home Manager** | ✅ Full Support | `homeManagerModules.default` | User-specific secrets |
+| Platform         | Status          | Module                       | Use Case                       |
+| ---------------- | --------------- | ---------------------------- | ------------------------------ |
+| **NixOS**        | ✅ Full Support | `nixosModules.default`       | System-wide secret management  |
+| **nix-darwin**   | ✅ Full Support | `darwinModules.default`      | macOS system secret management |
+| **Home Manager** | ✅ Full Support | `homeManagerModules.default` | User-specific secrets          |
 
 ## Common Use Cases
 
 ### Web Services
+
 ```nix
 # SSL certificates for web servers
 services.onepassword-secrets.secrets.sslCert = {
@@ -113,6 +117,7 @@ services.onepassword-secrets.secrets.sslCert = {
 ```
 
 ### Database Credentials
+
 ```nix
 # Database passwords with service integration
 services.onepassword-secrets.secrets.dbPassword = {
@@ -123,6 +128,7 @@ services.onepassword-secrets.secrets.dbPassword = {
 ```
 
 ### API Keys and Tokens
+
 ```nix
 # API keys for applications
 services.onepassword-secrets.secrets.apiKey = {
@@ -133,6 +139,7 @@ services.onepassword-secrets.secrets.apiKey = {
 ```
 
 ### Home Manager Secrets
+
 ```nix
 # User SSH keys and development tokens
 programs.onepassword-secrets.secrets.sshKey = {
@@ -148,11 +155,11 @@ programs.onepassword-secrets.secrets.sshKey = {
 
 OpNix V1 introduces significant reliability improvements:
 
-- **systemd/launchd Services**: Replaced activation scripts with proper services
-- **Graceful Degradation**: Missing tokens won't break system boot
-- **Service Integration**: Automatic service dependencies and restart management
-- **Change Detection**: Only update secrets when content actually changes
-- **Error Recovery**: Rollback capabilities and comprehensive error handling
+-   **systemd/launchd Services**: Replaced activation scripts with proper services
+-   **Graceful Degradation**: Missing tokens won't break system boot
+-   **Service Integration**: Automatic service dependencies and restart management
+-   **Change Detection**: Only update secrets when content actually changes
+-   **Error Recovery**: Rollback capabilities and comprehensive error handling
 
 ### Security Model
 
@@ -176,28 +183,32 @@ OpNix V1 introduces significant reliability improvements:
 ## What's New in V1?
 
 ### Major Features
-- **Declarative Configuration**: Define secrets in Nix instead of JSON files
-- **Flexible Ownership**: Per-secret user/group and permission control
-- **Custom Paths**: Deploy secrets to any absolute path with template support
-- **Service Integration**: Automatic systemd service dependencies and restarts
-- **Enhanced Reliability**: systemd services with graceful error handling
-- **Multi-Platform**: Full support for NixOS, nix-darwin, and Home Manager
+
+-   **Declarative Configuration**: Define secrets in Nix instead of JSON files
+-   **Flexible Ownership**: Per-secret user/group and permission control
+-   **Custom Paths**: Deploy secrets to any absolute path with template support
+-   **Service Integration**: Automatic systemd service dependencies and restarts
+-   **Enhanced Reliability**: systemd services with graceful error handling
+-   **Multi-Platform**: Full support for NixOS, nix-darwin, and Home Manager
 
 ### Backward Compatibility
+
 V1 is fully backward compatible with V0 configurations. Your existing JSON-based configurations will continue to work while you gradually migrate to new features.
 
 ## Installation Methods
 
 ### With Flakes (Recommended)
+
 ```nix
 inputs.opnix.url = "github:brizzbuzz/opnix";
 ```
 
 ### Without Flakes
+
 ```nix
 let
   opnix = builtins.fetchTarball {
-    url = "https://github.com/brizzbuzz/opnix/archive/main.tar.gz";
+    url = "https://github.com/itzTheMeow/opnix/archive/main.tar.gz";
   };
 in {
   imports = [ "${opnix}/nix/module.nix" ];
@@ -205,27 +216,31 @@ in {
 ```
 
 ### Using Nix Channels
+
 ```bash
-nix-channel --add https://github.com/brizzbuzz/opnix/archive/main.tar.gz opnix
+nix-channel --add https://github.com/itzTheMeow/opnix/archive/main.tar.gz opnix
 nix-channel --update
 ```
 
 ## Getting Help
 
 ### Documentation
-- **Read the guides** in this documentation directory
-- **Check examples** for your specific use case
-- **Review troubleshooting** for common issues
+
+-   **Read the guides** in this documentation directory
+-   **Check examples** for your specific use case
+-   **Review troubleshooting** for common issues
 
 ### Community Support
-- **GitHub Issues**: [Report bugs and request features](https://github.com/brizzbuzz/opnix/issues)
-- **GitHub Discussions**: [Ask questions and share configurations](https://github.com/brizzbuzz/opnix/discussions)
+
+-   **GitHub Issues**: [Report bugs and request features](https://github.com/itzTheMeow/opnix/issues)
+-   **GitHub Discussions**: [Ask questions and share configurations](https://github.com/itzTheMeow/opnix/discussions)
 
 ### Contributing
-- **Documentation**: Help improve these guides
-- **Examples**: Share your working configurations
-- **Code**: Contribute features and bug fixes
-- **Testing**: Help test new releases
+
+-   **Documentation**: Help improve these guides
+-   **Examples**: Share your working configurations
+-   **Code**: Contribute features and bug fixes
+-   **Testing**: Help test new releases
 
 ## Security Notice
 
@@ -243,9 +258,9 @@ OpNix is released under the [MIT License](../LICENSE).
 
 ## Credits
 
-- Inspired by [agenix](https://github.com/ryantm/agenix) for Nix secret management patterns
-- Built with [1Password SDK for Go](https://github.com/1Password/onepassword-sdk-go)
-- Thanks to the NixOS, nix-darwin, and Home Manager communities
+-   Inspired by [agenix](https://github.com/ryantm/agenix) for Nix secret management patterns
+-   Built with [1Password SDK for Go](https://github.com/1Password/onepassword-sdk-go)
+-   Thanks to the NixOS, nix-darwin, and Home Manager communities
 
 ---
 

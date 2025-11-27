@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/brizzbuzz/opnix/internal/config"
+	"github.com/itzTheMeow/opnix/internal/config"
 )
 
 // Mock client for testing

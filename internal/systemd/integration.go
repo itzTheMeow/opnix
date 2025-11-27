@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brizzbuzz/opnix/internal/config"
-	"github.com/brizzbuzz/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/config"
+	"github.com/itzTheMeow/opnix/internal/errors"
 )
 
 // ServiceAction defines how to handle a service when secrets change

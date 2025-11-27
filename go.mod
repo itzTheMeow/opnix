@@ -1,4 +1,4 @@
-module github.com/brizzbuzz/opnix
+module github.com/itzTheMeow/opnix
 
 go 1.22.3
 

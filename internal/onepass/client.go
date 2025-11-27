@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/1password/onepassword-sdk-go"
-	"github.com/brizzbuzz/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/errors"
 )
 
 type Client struct {

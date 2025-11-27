@@ -9,8 +9,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/brizzbuzz/opnix/internal/config"
-	"github.com/brizzbuzz/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/config"
+	"github.com/itzTheMeow/opnix/internal/errors"
 )
 
 type SecretClient interface {

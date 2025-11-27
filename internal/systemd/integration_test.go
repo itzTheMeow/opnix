@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/brizzbuzz/opnix/internal/config"
+	"github.com/itzTheMeow/opnix/internal/config"
 )
 
 // mockSystemdIntegration creates a test systemd integration config

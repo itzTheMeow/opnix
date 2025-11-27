@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/brizzbuzz/opnix/internal/errors"
-	"github.com/brizzbuzz/opnix/internal/validation"
+	"github.com/itzTheMeow/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/validation"
 )
 
 type Secret struct {

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/brizzbuzz/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/errors"
 )
 
 func TestValidator_ValidateConfig(t *testing.T) {

@@ -6,22 +6,22 @@ This guide helps you migrate from OpNix V0 to V1, which introduces significant i
 
 ### What's New in V1
 
-- **Declarative Configuration**: Define secrets directly in Nix configuration
-- **CamelCase Variable Names**: Idiomatic Nix variable naming (e.g., `databasePassword` instead of `"database/password"`)
-- **Flexible Ownership**: Per-secret user/group ownership and permissions
-- **Custom Paths**: Absolute paths and path templates
-- **Service Integration**: Automatic service restarts on secret changes
-- **systemd Services**: Reliable service-based architecture (no more activation scripts)
-- **Enhanced Error Handling**: Graceful degradation and better error messages
-- **Multi-platform Support**: NixOS, nix-darwin, and Home Manager modules
+-   **Declarative Configuration**: Define secrets directly in Nix configuration
+-   **CamelCase Variable Names**: Idiomatic Nix variable naming (e.g., `databasePassword` instead of `"database/password"`)
+-   **Flexible Ownership**: Per-secret user/group ownership and permissions
+-   **Custom Paths**: Absolute paths and path templates
+-   **Service Integration**: Automatic service restarts on secret changes
+-   **systemd Services**: Reliable service-based architecture (no more activation scripts)
+-   **Enhanced Error Handling**: Graceful degradation and better error messages
+-   **Multi-platform Support**: NixOS, nix-darwin, and Home Manager modules
 
 ### Breaking Changes
 
-- **CamelCase Variable Names Required**: Declarative secrets must use camelCase variable names (e.g., `databasePassword`, not `"database/password"`)
-- **Activation Scripts → systemd Services**: OpNix now uses systemd services instead of activation scripts
-- **New Module Structure**: Enhanced configuration options with better validation
-- **Path Behavior**: Custom path handling with backward compatibility
-- **Service Dependencies**: Automatic systemd service dependency management
+-   **CamelCase Variable Names Required**: Declarative secrets must use camelCase variable names (e.g., `databasePassword`, not `"database/password"`)
+-   **Activation Scripts → systemd Services**: OpNix now uses systemd services instead of activation scripts
+-   **New Module Structure**: Enhanced configuration options with better validation
+-   **Path Behavior**: Custom path handling with backward compatibility
+-   **Service Dependencies**: Automatic systemd service dependency management
 
 ### Backward Compatibility
 
@@ -45,15 +45,17 @@ services.onepassword-secrets = {
 ```
 
 **Benefits:**
-- Zero migration effort
-- Immediate access to V1 reliability improvements
-- No configuration changes required
+
+-   Zero migration effort
+-   Immediate access to V1 reliability improvements
+-   No configuration changes required
 
 **What you get:**
-- systemd service reliability
-- Graceful token handling
-- Better error messages
-- Improved boot safety
+
+-   systemd service reliability
+-   Graceful token handling
+-   Better error messages
+-   Improved boot safety
 
 ### Strategy 2: Gradual Migration to Declarative Configuration
 
@@ -62,13 +64,13 @@ Migrate incrementally by moving secrets from JSON files to declarative configura
 ```nix
 services.onepassword-secrets = {
   enable = true;
-  
+
   # Keep existing JSON files
   configFiles = [
     ./legacy-secrets.json
     ./database-secrets.json
   ];
-  
+
   # Add new secrets declaratively
   secrets = {
     newServiceApiKey = {
@@ -81,9 +83,10 @@ services.onepassword-secrets = {
 ```
 
 **Benefits:**
-- Gradual migration path
-- Test new features incrementally
-- Maintain existing working secrets
+
+-   Gradual migration path
+-   Test new features incrementally
+-   Maintain existing working secrets
 
 ### Strategy 3: Full Migration to V1 Features
 
@@ -93,7 +96,7 @@ Completely migrate to the new declarative format and leverage all V1 features:
 services.onepassword-secrets = {
   enable = true;
   tokenFile = "/etc/opnix-token";
-  
+
   # All secrets defined declaratively
   secrets = {
     databasePassword = {
@@ -103,7 +106,7 @@ services.onepassword-secrets = {
       mode = "0600";
       services = ["postgresql"];
     };
-    
+
     sslCertificate = {
       reference = "op://Homelab/SSL/certificate";
       path = "/etc/ssl/certs/app.pem";
@@ -118,7 +121,7 @@ services.onepassword-secrets = {
       };
     };
   };
-  
+
   # Enable advanced features
   systemdIntegration = {
     enable = true;
@@ -130,16 +133,18 @@ services.onepassword-secrets = {
 ```
 
 **Benefits:**
-- Full access to V1 features
-- Better configuration management
-- Enhanced service integration
-- Improved maintainability
+
+-   Full access to V1 features
+-   Better configuration management
+-   Enhanced service integration
+-   Improved maintainability
 
 ## CamelCase Variable Names Migration
 
 **Important**: Starting with OpNix V1, declarative secrets must use camelCase variable names instead of path-like strings.
 
 ### Before (V0 Style - No Longer Supported)
+
 ```nix
 services.onepassword-secrets.secrets = {
   databasePassword = {
@@ -155,6 +160,7 @@ services.onepassword-secrets.secrets = {
 ```
 
 ### After (V1 Required Format)
+
 ```nix
 services.onepassword-secrets.secrets = {
   databasePassword = {
@@ -178,13 +184,13 @@ services.onepassword-secrets.secrets = {
 
 ### Common Conversions
 
-| Old Format | New Format |
-|------------|------------|
+| Old Format            | New Format         |
+| --------------------- | ------------------ |
 | `"database/password"` | `databasePassword` |
-| `"ssl/cert"` | `sslCert` |
-| `"api-keys/github"` | `githubApiKey` |
-| `"ssh/private-key"` | `sshPrivateKey` |
-| `"config/app-token"` | `appConfigToken` |
+| `"ssl/cert"`          | `sslCert`          |
+| `"api-keys/github"`   | `githubApiKey`     |
+| `"ssh/private-key"`   | `sshPrivateKey`    |
+| `"config/app-token"`  | `appConfigToken`   |
 
 ### Migration Steps
 
@@ -274,22 +280,24 @@ Implement your chosen migration strategy. Here are common patterns:
 #### Converting JSON Configuration to Declarative
 
 **Before (V0 JSON file):**
+
 ```json
 {
-  "secrets": [
-    {
-      "path": "databasePassword",
-      "reference": "op://Homelab/Database/password"
-    },
-    {
-      "path": "ssl/cert",
-      "reference": "op://Homelab/SSL/certificate"
-    }
-  ]
+    "secrets": [
+        {
+            "path": "databasePassword",
+            "reference": "op://Homelab/Database/password"
+        },
+        {
+            "path": "ssl/cert",
+            "reference": "op://Homelab/SSL/certificate"
+        }
+    ]
 }
 ```
 
 **After (V1 Declarative):**
+
 ```nix
 services.onepassword-secrets.secrets = {
   databasePassword = {
@@ -300,7 +308,7 @@ services.onepassword-secrets.secrets = {
     mode = "0600";
     services = ["postgresql"];
   };
-  
+
   sslCert = {
     reference = "op://Homelab/SSL/certificate";
     # Use custom path
@@ -326,7 +334,7 @@ services.onepassword-secrets = {
 services.onepassword-secrets = {
   enable = true;
   configFile = ./secrets.json;  # Keep existing
-  
+
   # Add service integration
   systemdIntegration = {
     enable = true;
@@ -363,11 +371,13 @@ sudo systemctl status postgresql.service caddy.service
 NixOS migration is straightforward since it was the primary platform for V0.
 
 **Key changes:**
-- Activation scripts → systemd services
-- Enhanced error handling
-- Service dependency management
+
+-   Activation scripts → systemd services
+-   Enhanced error handling
+-   Service dependency management
 
 **Validation:**
+
 ```bash
 # Check systemd integration
 systemctl list-dependencies opnix-secrets.service
@@ -385,7 +395,7 @@ services.onepassword-secrets = {
   tokenFile = "/etc/opnix-token";
   groupId = 600;  # Choose unused GID
   users = ["yourusername"];
-  
+
   secrets = {
     # Your secrets here
   };
@@ -393,9 +403,10 @@ services.onepassword-secrets = {
 ```
 
 **macOS-specific considerations:**
-- Uses launchd instead of systemd
-- Requires explicit group ID configuration
-- Different default paths (`/usr/local/var/opnix/secrets`)
+
+-   Uses launchd instead of systemd
+-   Requires explicit group ID configuration
+-   Different default paths (`/usr/local/var/opnix/secrets`)
 
 ### Adding Home Manager Support
 
@@ -406,7 +417,7 @@ For user-specific secrets:
 programs.onepassword-secrets = {
   enable = true;
   tokenFile = "/etc/opnix-token";  # Can use system token
-  
+
   secrets = {
     sshPrivateKey = {
       reference = "op://Personal/SSH/private-key";
@@ -426,6 +437,7 @@ programs.onepassword-secrets = {
 **V0 Behavior:** No automatic dependency management.
 
 **V1 Solution:**
+
 ```nix
 services.onepassword-secrets.systemdIntegration = {
   enable = true;
@@ -440,6 +452,7 @@ services.onepassword-secrets.systemdIntegration = {
 **V0 Behavior:** All secrets owned by root with group access via `users` option.
 
 **V1 Solution:**
+
 ```nix
 services.onepassword-secrets.secrets = {
   databasePassword = {
@@ -500,7 +513,7 @@ in {
   services.onepassword-secrets = {
     enable = true;
     tokenFile = "/etc/opnix-${environment}-token";
-    
+
     secrets = {
       databasePassword = {
         reference = "op://Vault-${lib.toUpper environment}/Database/password";
@@ -519,7 +532,7 @@ For deployments with many secrets:
 ```nix
 services.onepassword-secrets = {
   enable = true;
-  
+
   # Organize with multiple config files
   configFiles = [
     ./secrets/databases.json
@@ -527,7 +540,7 @@ services.onepassword-secrets = {
     ./secrets/monitoring.json
     ./secrets/backups.json
   ];
-  
+
   # Enable advanced features for reliability
   systemdIntegration = {
     enable = true;
@@ -558,7 +571,7 @@ services.onepassword-secrets = {
 programs.onepassword-secrets = {
   enable = true;
   tokenFile = "/etc/opnix-token";  # Reuse system token
-  
+
   secrets = {
     sshKey = {
       reference = "op://Personal/SSH/key";
@@ -669,7 +682,7 @@ If you encounter issues during migration:
 2. **Validate configuration**: Use the validation scripts above
 3. **Test incrementally**: Migrate one secret at a time
 4. **Use staging environment**: Test changes before production
-5. **Ask for help**: Open an issue on [GitHub](https://github.com/brizzbuzz/opnix/issues)
+5. **Ask for help**: Open an issue on [GitHub](https://github.com/itzTheMeow/opnix/issues)
 
 ## Next Steps
 

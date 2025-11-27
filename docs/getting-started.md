@@ -6,9 +6,9 @@ OpNix provides secure integration between 1Password and NixOS/nix-darwin/Home Ma
 
 OpNix retrieves secrets from 1Password using service accounts and deploys them securely to your NixOS, macOS (nix-darwin), or Home Manager configurations. It supports:
 
-- **NixOS**: System-wide secret management with systemd integration
-- **nix-darwin**: macOS system secret management with launchd integration  
-- **Home Manager**: User-specific secret management across platforms
+-   **NixOS**: System-wide secret management with systemd integration
+-   **nix-darwin**: macOS system secret management with launchd integration
+-   **Home Manager**: User-specific secret management across platforms
 
 ## Prerequisites
 
@@ -59,13 +59,14 @@ OpNix retrieves secrets from 1Password using service accounts and deploys them s
 ### Step 2: Set Up 1Password Service Account
 
 1. **Create a service account** in your 1Password account:
-   - Go to Developer Settings in your 1Password account
-   - Create a new service account
-   - Note the service account token
+
+    - Go to Developer Settings in your 1Password account
+    - Create a new service account
+    - Note the service account token
 
 2. **Grant vault access** to the service account:
-   - Give the service account read access to vaults containing your secrets
-   - Test access using the 1Password CLI: `op item list --vault YourVault`
+    - Give the service account read access to vaults containing your secrets
+    - Test access using the 1Password CLI: `op item list --vault YourVault`
 
 ### Step 3: Configure Your Secrets
 
@@ -74,11 +75,12 @@ Choose your configuration method based on your setup:
 #### Option A: Declarative Configuration (Recommended)
 
 **NixOS/nix-darwin:**
+
 ```nix
 services.onepassword-secrets = {
   enable = true;
   tokenFile = "/etc/opnix-token";
-  
+
   secrets = {
     databasePassword = {
       reference = "op://Homelab/Database/password";
@@ -86,7 +88,7 @@ services.onepassword-secrets = {
       group = "postgres";
       mode = "0600";
     };
-    
+
     sslCertificate = {
       reference = "op://Homelab/SSL/certificate";
       path = "/etc/ssl/certs/app.pem";
@@ -99,18 +101,19 @@ services.onepassword-secrets = {
 ```
 
 **Home Manager:**
+
 ```nix
 programs.onepassword-secrets = {
   enable = true;
   tokenFile = "/etc/opnix-token";
-  
+
   secrets = {
     sshPrivateKey = {
       reference = "op://Personal/SSH/private-key";
       path = ".ssh/id_rsa";
       mode = "0600";
     };
-    
+
     configApiKey = {
       reference = "op://Work/API/key";
       path = ".config/myapp/api-key";
@@ -126,16 +129,16 @@ Create a secrets configuration file:
 
 ```json
 {
-  "secrets": [
-    {
-      "path": "databasePassword",
-      "reference": "op://Homelab/Database/password"
-    },
-    {
-      "path": "sslCertificate", 
-      "reference": "op://Homelab/SSL/certificate"
-    }
-  ]
+    "secrets": [
+        {
+            "path": "databasePassword",
+            "reference": "op://Homelab/Database/password"
+        },
+        {
+            "path": "sslCertificate",
+            "reference": "op://Homelab/SSL/certificate"
+        }
+    ]
 }
 ```
 
@@ -207,24 +210,24 @@ ls -la ~/.config/myapp/
 
 ### NixOS
 
-- Uses **systemd services** for reliable secret management
-- Secrets stored in `/var/lib/opnix/secrets/` by default
-- Supports service integration and restart on secret changes
-- Missing tokens won't break system boot (graceful degradation)
+-   Uses **systemd services** for reliable secret management
+-   Secrets stored in `/var/lib/opnix/secrets/` by default
+-   Supports service integration and restart on secret changes
+-   Missing tokens won't break system boot (graceful degradation)
 
 ### macOS (nix-darwin)
 
-- Uses **launchd services** for secret management
-- Secrets stored in `/usr/local/var/opnix/secrets/` by default
-- Requires explicit group ID configuration (`groupId` option)
-- Users must be added to the `onepassword-secrets` group
+-   Uses **launchd services** for secret management
+-   Secrets stored in `/usr/local/var/opnix/secrets/` by default
+-   Requires explicit group ID configuration (`groupId` option)
+-   Users must be added to the `onepassword-secrets` group
 
 ### Home Manager
 
-- Works on **any platform** (Linux, macOS, etc.)
-- Secrets stored relative to home directory
-- Runs during Home Manager activation
-- Can access system tokens or use separate token files
+-   Works on **any platform** (Linux, macOS, etc.)
+-   Secrets stored relative to home directory
+-   Runs during Home Manager activation
+-   Can access system tokens or use separate token files
 
 ## Common Patterns
 
@@ -240,7 +243,7 @@ services.onepassword-secrets.secrets = {
     mode = "0644";
     services = ["caddy"];
   };
-  
+
   sslKey = {
     reference = "op://Homelab/SSL/private-key";
     path = "/etc/ssl/private/app.key";
@@ -297,6 +300,7 @@ services.grafana = {
 ### Token Issues
 
 **Token file not found:**
+
 ```
 WARNING: Token file /etc/opnix-token does not exist!
 INFO: Using existing secrets, skipping updates
@@ -306,12 +310,14 @@ INFO: Run 'opnix token set' to configure the token
 **Solution:** Run `sudo opnix token set` to configure the token.
 
 **Authentication failed:**
+
 ```
 ERROR: Authentication failed
 INFO: Token may be expired or invalid
 ```
 
-**Solution:** 
+**Solution:**
+
 1. Verify the token in 1Password
 2. Regenerate the service account token if needed
 3. Run `sudo opnix token set` with the new token
@@ -319,6 +325,7 @@ INFO: Token may be expired or invalid
 ### Permission Issues
 
 **Cannot write secret file:**
+
 ```
 ERROR: Cannot write secret file
 Secret: sslCert
@@ -327,6 +334,7 @@ Issue: Permission denied
 ```
 
 **Solution:**
+
 1. Create the target directory: `sudo mkdir -p /etc/ssl/certs`
 2. Check parent directory permissions: `ls -la /etc/ssl/`
 3. Ensure OpNix service has write access
@@ -334,6 +342,7 @@ Issue: Permission denied
 ### Secret Reference Issues
 
 **Secret not found:**
+
 ```
 ERROR: 1Password reference not found
 Secret: apiKey
@@ -342,19 +351,20 @@ Issue: Item 'Missing-Item' not found in vault 'Vault'
 ```
 
 **Solution:**
+
 1. Verify the secret exists in 1Password
 2. Test the reference with 1Password CLI: `op item get "Missing-Item" --vault "Vault"`
 3. Check service account vault access permissions
 
 ## Next Steps
 
-- Read the [Configuration Reference](./configuration-reference.md) for detailed option documentation
-- Check out [Examples](./examples/) for more complex configurations  
-- See [Best Practices](./best-practices.md) for security recommendations
-- Review [Migration Guide](./migration-guide.md) if upgrading from V0
+-   Read the [Configuration Reference](./configuration-reference.md) for detailed option documentation
+-   Check out [Examples](./examples/) for more complex configurations
+-   See [Best Practices](./best-practices.md) for security recommendations
+-   Review [Migration Guide](./migration-guide.md) if upgrading from V0
 
 ## Getting Help
 
-- **GitHub Issues**: [Report bugs and request features](https://github.com/brizzbuzz/opnix/issues)
-- **Documentation**: Check the full documentation in the `docs/` directory
-- **1Password CLI**: Use `op --help` for 1Password CLI documentation
+-   **GitHub Issues**: [Report bugs and request features](https://github.com/itzTheMeow/opnix/issues)
+-   **Documentation**: Check the full documentation in the `docs/` directory
+-   **1Password CLI**: Use `op --help` for 1Password CLI documentation
