@@ -424,7 +424,7 @@ in {
               )}
             ''
             + (
-              if cfg.desktopIntegration != null then
+              if cfg.desktopIntegration == null then
                 ''
                   # Set up token file with correct group permissions if it exists
                   if [ -f ${cfg.tokenFile} ]; then
@@ -526,7 +526,7 @@ in {
                       echo "Re-processing config file for service changes: ${configFile}"
                       ${pkgsWithOverlay.opnix}/bin/opnix secret \
                         ${
-                          if cfg.desktopIntegration != null then
+                          if cfg.desktopIntegration == null then
                             ''-token-file ${cfg.tokenFile}''
                           else
                             ''-desktop-integration ${lib.escapeShellArg cfg.desktopIntegration}''

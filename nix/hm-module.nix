@@ -226,7 +226,7 @@ in {
 
       # Retrieve secrets during activation
       home.activation.retrieveOpnixSecrets = lib.hm.dag.entryAfter [ "createOpnixDirs" ] (
-          if cfg.desktopIntegration != null then
+          if cfg.desktopIntegration == null then
             ''
               # Handle missing token file gracefully
               if [ ! -f ${lib.escapeShellArg cfg.tokenFile} ]; then

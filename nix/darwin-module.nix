@@ -287,7 +287,7 @@ in {
                 mkdir -p ${cfg.outputDir}
                 chmod 750 ${cfg.outputDir}
               '' + (
-                if cfg.desktopIntegration != null then
+                if cfg.desktopIntegration == null then
                   ''
                     # Set up token file with correct group permissions if it exists
                     if [ -f ${cfg.tokenFile} ]; then
