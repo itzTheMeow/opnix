@@ -97,6 +97,14 @@ in {
       '';
     };
 
+    desktopIntegration = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      description = ''
+        The account name to use for authorizing via the 1Password desktop app.
+        Setting this enables desktop integration and will ignore 'tokenFile'.
+      '';
+    };
+
     secrets = lib.mkOption {
       type = lib.types.attrsOf secretType;
       default = {};
@@ -217,31 +225,44 @@ in {
       '';
 
       # Retrieve secrets during activation
-      home.activation.retrieveOpnixSecrets = lib.hm.dag.entryAfter ["createOpnixDirs"] ''
-        # Handle missing token file gracefully
-        if [ ! -f ${lib.escapeShellArg cfg.tokenFile} ]; then
-          echo "WARNING: Token file ${cfg.tokenFile} does not exist!" >&2
-          echo "INFO: Using existing secrets, skipping updates" >&2
-          echo "INFO: Run 'opnix token set' to configure the token" >&2
-          exit 0
-        fi
+      home.activation.retrieveOpnixSecrets = lib.hm.dag.entryAfter [ "createOpnixDirs" ] (
+          if cfg.desktopIntegration != null then
+            ''
+              # Handle missing token file gracefully
+              if [ ! -f ${lib.escapeShellArg cfg.tokenFile} ]; then
+                echo "WARNING: Token file ${cfg.tokenFile} does not exist!" >&2
+                echo "INFO: Using existing secrets, skipping updates" >&2
+                echo "INFO: Run 'opnix token set' to configure the token" >&2
+                exit 0
+              fi
 
-        if [ ! -r ${lib.escapeShellArg cfg.tokenFile} ]; then
-          echo "ERROR: Cannot read system token at ${cfg.tokenFile}" >&2
-          echo "INFO: Make sure the system token can be accessed by your user" >&2
-          exit 1
-        fi
+              if [ ! -r ${lib.escapeShellArg cfg.tokenFile} ]; then
+                echo "ERROR: Cannot read system token at ${cfg.tokenFile}" >&2
+                echo "INFO: Make sure the system token can be accessed by your user" >&2
+                exit 1
+              fi
 
-        # Retrieve secrets for each config file
-        ${lib.concatMapStringsSep "\n" (configFile: ''
-            echo "Processing config file: ${configFile}"
-            $DRY_RUN_CMD ${pkgsWithOverlay.opnix}/bin/opnix secret \
-              -token-file ${lib.escapeShellArg cfg.tokenFile} \
-              -config ${configFile} \
-              -output "$HOME"
-          '')
-          allConfigFiles}
-      '';
+              # Retrieve secrets for each config file
+              ${lib.concatMapStringsSep "\n" (configFile: ''
+                echo "Processing config file: ${configFile}"
+                $DRY_RUN_CMD ${pkgsWithOverlay.opnix}/bin/opnix secret \
+                  -token-file ${lib.escapeShellArg cfg.tokenFile} \
+                  -config ${configFile} \
+                  -output "$HOME"
+              '') allConfigFiles}
+            ''
+          else
+            ''
+              # Retrieve secrets for each config file
+              ${lib.concatMapStringsSep "\n" (configFile: ''
+                echo "Processing config file: ${configFile}"
+                $DRY_RUN_CMD ${pkgsWithOverlay.opnix}/bin/opnix secret \
+                  -desktop-integration ${lib.escapeShellArg cfg.desktopIntegration} \
+                  -config ${configFile} \
+                  -output "$HOME"
+              '') allConfigFiles}
+            ''
+        );
     }))
   ];
 }

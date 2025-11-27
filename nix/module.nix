@@ -51,6 +51,14 @@ in {
       '';
     };
 
+    desktopIntegration = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      description = ''
+        The account name to use for authorizing via the 1Password desktop app.
+        Setting this enables desktop integration and will ignore 'tokenFile'.
+      '';
+    };
+
     configFiles = lib.mkOption {
       type = lib.types.listOf lib.types.path;
       default = [];
@@ -414,49 +422,62 @@ in {
                   chmod 755 $(dirname ${cfg.systemdIntegration.changeDetection.hashFile})
                 ''
               )}
+            ''
+            + (
+              if cfg.desktopIntegration != null then
+                ''
+                  # Set up token file with correct group permissions if it exists
+                  if [ -f ${cfg.tokenFile} ]; then
+                    # Ensure token file has correct ownership and permissions
+                    chown root:${opnixGroup} ${cfg.tokenFile}
+                    chmod 640 ${cfg.tokenFile}
+                  fi
 
-              # Set up token file with correct group permissions if it exists
-              if [ -f ${cfg.tokenFile} ]; then
-                # Ensure token file has correct ownership and permissions
-                chown root:${opnixGroup} ${cfg.tokenFile}
-                chmod 640 ${cfg.tokenFile}
-              fi
+                  # Handle missing token file gracefully - don't fail system boot
+                  if [ ! -f ${cfg.tokenFile} ]; then
+                    echo "WARNING: Token file ${cfg.tokenFile} does not exist!" >&2
+                    echo "INFO: Using existing secrets, skipping updates" >&2
+                    echo "INFO: Run 'opnix token set' to configure the token" >&2
+                    exit 0
+                  fi
 
-              # Handle missing token file gracefully - don't fail system boot
-              if [ ! -f ${cfg.tokenFile} ]; then
-                echo "WARNING: Token file ${cfg.tokenFile} does not exist!" >&2
-                echo "INFO: Using existing secrets, skipping updates" >&2
-                echo "INFO: Run 'opnix token set' to configure the token" >&2
-                exit 0
-              fi
+                  # Validate token file permissions
+                  if [ ! -r ${cfg.tokenFile} ]; then
+                    echo "ERROR: Token file ${cfg.tokenFile} is not readable!" >&2
+                    echo "INFO: Check file permissions or group membership" >&2
+                    exit 1
+                  fi
 
-              # Validate token file permissions
-              if [ ! -r ${cfg.tokenFile} ]; then
-                echo "ERROR: Token file ${cfg.tokenFile} is not readable!" >&2
-                echo "INFO: Check file permissions or group membership" >&2
-                exit 1
-              fi
+                  # Validate token is not empty
+                  if [ ! -s ${cfg.tokenFile} ]; then
+                    echo "ERROR: Token file is empty!" >&2
+                    echo "INFO: Run 'opnix token set' to configure the token" >&2
+                    exit 1
+                  fi
 
-              # Validate token is not empty
-              if [ ! -s ${cfg.tokenFile} ]; then
-                echo "ERROR: Token file is empty!" >&2
-                echo "INFO: Run 'opnix token set' to configure the token" >&2
-                exit 1
-              fi
-
-              # Run the secrets retrieval tool for each config file
-              ${lib.concatMapStringsSep "\n" (configFile: ''
-                  echo "Processing config file: ${configFile}"
-                  ${pkgsWithOverlay.opnix}/bin/opnix secret \
-                    -token-file ${cfg.tokenFile} \
-                    -config ${configFile} \
-                    -output ${cfg.outputDir}
-                '')
-                allConfigFiles}
-
-              ${lib.optionalString cfg.systemdIntegration.enable ''
-                echo "INFO: Systemd integration enabled - services will be managed automatically"
-              ''}
+                  # Run the secrets retrieval tool for each config file
+                  ${lib.concatMapStringsSep "\n" (configFile: ''
+                    echo "Processing config file: ${configFile}"
+                    ${pkgsWithOverlay.opnix}/bin/opnix secret \
+                      -token-file ${cfg.tokenFile} \
+                      -config ${configFile} \
+                      -output ${cfg.outputDir}
+                  '') allConfigFiles}
+                ''
+              else
+                ''
+                  # Run the secrets retrieval tool for each config file
+                  ${lib.concatMapStringsSep "\n" (configFile: ''
+                    echo "Processing config file: ${configFile}"
+                    ${pkgsWithOverlay.opnix}/bin/opnix secret \
+                      -desktop-integration ${lib.escapeShellArg cfg.desktopIntegration} \
+                      -config ${configFile} \
+                      -output ${cfg.outputDir}
+                  '') allConfigFiles}
+                ''
+            )
+            + lib.optionalString cfg.systemdIntegration.enable ''
+              echo "INFO: Systemd integration enabled - services will be managed automatically"
             '';
           };
         }
@@ -504,11 +525,15 @@ in {
                   ${lib.concatMapStringsSep "\n" (configFile: ''
                       echo "Re-processing config file for service changes: ${configFile}"
                       ${pkgsWithOverlay.opnix}/bin/opnix secret \
-                        -token-file ${cfg.tokenFile} \
+                        ${
+                          if cfg.desktopIntegration != null then
+                            ''-token-file ${cfg.tokenFile}''
+                          else
+                            ''-desktop-integration ${lib.escapeShellArg cfg.desktopIntegration}''
+                        } \
                         -config ${configFile} \
                         -output ${cfg.outputDir} || true
-                    '')
-                    allConfigFiles}
+                    '') allConfigFiles}
 
                   echo "OpNix service restart evaluation completed"
                 '';
