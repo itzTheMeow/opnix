@@ -145,11 +145,13 @@ func (s *secretCommand) validatePrerequisites() error {
 	}
 
 	// Validate token file (but don't fail if missing - let graceful handling work)
-	validator := validation.NewValidator()
-	if err := validator.ValidateTokenFile(s.tokenFile); err != nil {
-		// For token errors, log a warning but don't fail
-		fmt.Fprintf(os.Stderr, "WARNING: %v\n", err)
-		fmt.Fprintf(os.Stderr, "INFO: Continuing with existing secrets if available\n")
+	if s.desktopIntegration == "" {
+		validator := validation.NewValidator()
+		if err := validator.ValidateTokenFile(s.tokenFile); err != nil {
+			// For token errors, log a warning but don't fail
+			fmt.Fprintf(os.Stderr, "WARNING: %v\n", err)
+			fmt.Fprintf(os.Stderr, "INFO: Continuing with existing secrets if available\n")
+		}
 	}
 
 	return nil
