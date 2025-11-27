@@ -6,12 +6,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/brizzbuzz/opnix/internal/config"
-	"github.com/brizzbuzz/opnix/internal/errors"
-	"github.com/brizzbuzz/opnix/internal/onepass"
-	"github.com/brizzbuzz/opnix/internal/secrets"
-	"github.com/brizzbuzz/opnix/internal/systemd"
-	"github.com/brizzbuzz/opnix/internal/validation"
+	"github.com/itzTheMeow/opnix/internal/config"
+	"github.com/itzTheMeow/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/onepass"
+	"github.com/itzTheMeow/opnix/internal/secrets"
+	"github.com/itzTheMeow/opnix/internal/systemd"
+	"github.com/itzTheMeow/opnix/internal/validation"
 )
 
 const defaultTokenPath = "/etc/opnix-token"

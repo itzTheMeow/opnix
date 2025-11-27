@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/brizzbuzz/opnix/internal/errors"
+	"github.com/itzTheMeow/opnix/internal/errors"
 )
 
 type command interface {
