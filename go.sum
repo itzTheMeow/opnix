@@ -1,7 +1,5 @@
-github.com/1password/onepassword-sdk-go v0.3.0 h1:PC3J08hOH7xmt5QjpakhjZzx0XfbBb4SkBVEqgYYG54=
-github.com/1password/onepassword-sdk-go v0.3.0/go.mod h1:kssODrGGqHtniqPR91ZPoCMEo79mKulKat7RaD1bunk=
-github.com/1password/onepassword-sdk-go v0.4.0-beta.1 h1:tpUJsyik9zBD35Sh/1iBXFErWyc3/Neos+ot07c6Ow8=
-github.com/1password/onepassword-sdk-go v0.4.0-beta.1/go.mod h1:kssODrGGqHtniqPR91ZPoCMEo79mKulKat7RaD1bunk=
+github.com/1password/onepassword-sdk-go v0.4.0-beta.2 h1:l3y/hSV90yO3MxRVBInyMCkM1j/PGRkJ+xHH2azhAmY=
+github.com/1password/onepassword-sdk-go v0.4.0-beta.2/go.mod h1:NZBLm3Z5ulcosu1qb+fveYIr1QfpVIMr5FgGhhQDMhs=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dylibso/observe-sdk/go v0.0.0-20240819160327-2d926c5d788a h1:UwSIFv5g5lIvbGgtf3tVwC7Ky9rmMFBp0RMs+6f6YqE=
@@ -24,6 +22,8 @@ github.com/tetratelabs/wazero v1.9.0 h1:IcZ56OuxrtaEz8UYNRHBrUa9bYeX9oVY93KspZZB
 github.com/tetratelabs/wazero v1.9.0/go.mod h1:TSbcXCfFP0L2FGkRPxHphadXPjo1T6W+CseNNY7EkjM=
 go.opentelemetry.io/proto/otlp v1.3.1 h1:TrMUixzpM0yuc/znrFTP9MMRh8trP93mkCiDVeXrui0=
 go.opentelemetry.io/proto/otlp v1.3.1/go.mod h1:0X1WI4de4ZsLrrJNLAQbFeLCm3T7yBkR0XqQ7niQU+8=
+golang.org/x/sys v0.37.0 h1:fdNQudmxPjkdUTPnLn5mdQv7Zwvbvpaxqs831goi9kQ=
+golang.org/x/sys v0.37.0/go.mod h1:OgkHotnGiDImocRcuBABYBEXf8A9a87e/uXjp9XT3ks=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/protobuf v1.34.2 h1:6xV6lTsCfpGD21XK49h7MhtcApnLqkfYgPcdHftf6hg=
