@@ -1,8 +1,8 @@
 module github.com/itzTheMeow/opnix
 
-go 1.22.3
+go 1.24.0
 
-require github.com/1password/onepassword-sdk-go v0.4.0-beta.1
+require github.com/1password/onepassword-sdk-go v0.4.0-beta.2
 
 require (
 	github.com/dylibso/observe-sdk/go v0.0.0-20240819160327-2d926c5d788a // indirect
@@ -12,5 +12,8 @@ require (
 	github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834 // indirect
 	github.com/tetratelabs/wazero v1.9.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
+	golang.org/x/sys v0.37.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
+
+replace github.com/1password/onepassword-sdk-go => github.com/itzTheMeow/onepassword-sdk-go v0.4.0-beta.2.0.20251128043750-b23e9f11e5ca
